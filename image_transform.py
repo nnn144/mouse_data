@@ -18,7 +18,7 @@ def translation_mat(x, y):
                [0, 0, 1]])
     return mat
 
-def trans_image(image, tx, ty):
+def translation(image, tx, ty):
     """
     Calculate the translated image.
     
@@ -50,7 +50,7 @@ def trans_image(image, tx, ty):
     # return, it is an np.ndarray
     return trans_img
 
-def rotate_image(image, rot_angle):
+def rotation(image, rot_angle):
     """Return rotated image given rotation angle"""
     rows, cols = image.shape
     
@@ -59,7 +59,28 @@ def rotate_image(image, rot_angle):
     
     return rotated_img
 
-def filp_image(image, flag):
+def scaling(image, scale_factor):
+    """ Uniform scaling """
+    copy_img = np.array(image)
+    rows, cols = copy_img.shape
+    
+    scale_mat = np.array([[scale_factor, 0, 0],
+                          [0, scale_factor, 0]]).astype("float32")
+    temp_img = cv2.warpAffine(copy_img, scale_mat, (rows,cols))
+    return temp_img
+
+def shearing(image, shear_factor):
+    """ Image shearing """
+    copy_img = np.array(image)
+    rows, cols = copy_img.shape
+    
+    sx, sy = shear_factor
+    shear_mat = np.array([[1, sx, 0],
+                          [sy, 1, 0]]).astype("float32")
+    temp_img = cv2.warpAffine(copy_img, shear_mat, (rows,cols))
+    return temp_img
+
+def flipping(image, flag):
     """ Flip the image and return it """
     if flag == 0:
         # vertically

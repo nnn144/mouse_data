@@ -6,17 +6,23 @@ from skimage.filters import threshold_otsu
 from skimage.transform import iradon
 
 # linear normalization
-def normalization(arr, a=0., b=255.):
+def norm(arr, a=0., b=255.):
     arr_norm = np.zeros(arr.shape)
     arr_norm = cv2.normalize(arr, arr_norm, a, b, cv2.NORM_MINMAX)
     return arr_norm
 
+def normalizing(img_set, a=0., b=255.):
+    for i, img in enumerate(img_set):
+        norm_img = norm(img, a, b)
+        norm_img = np.clip(norm_img, a_min=0, a_max=None)
+        img_set[i] = norm_img
+    return img_set
+
 def normalize_individual(img_set, a=0., b=255.):
     for i, img in enumerate(img_set):
-        norm_img = normalization(img, a, b)
-        norm_img = np.clip(norm_img, a_min=0, a_max=None)
+        norm_img = np.clip(img, a_min=0, a_max=None)
         noisy_img = norm_img + np.random.poisson(norm_img)
-        img_set[i] = np.clip(normalization(noisy_img, a, b), a_min=0, a_max=None)
+        img_set[i] = np.clip(norm(noisy_img, a, b), a_min=0, a_max=None)
     return img_set
 
 def mask_creation(img_set):
